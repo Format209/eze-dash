@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Dashboard {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  icon        String   @default("layout-dashboard")
+  description String?
+  background  String?
+  theme       String?
+  columns     Int      @default(4)
+  isDefault   Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  widgets     Widget[]
+}
+
+model Widget {
+  id          String    @id @default(cuid())
+  type        String
+  title       String
+  config      String    @default("{}")
+  colSpan     Int       @default(2)
+  rowSpan     Int       @default(15)
+  posX        Int       @default(0)
+  posY        Int       @default(0)
+  order       Int       @default(0)
+  dashboardId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  dashboard   Dashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+}
+
+model Settings {
+  id          String  @id @default("settings")
+  theme       String  @default("dark")
+  accentColor String  @default("#6366f1")
+  gridColumns Int     @default(4)
+  background  String?
+  customCSS   String?
+  siteTitle   String  @default("EzeDash")
+  faviconUrl  String?
+}
