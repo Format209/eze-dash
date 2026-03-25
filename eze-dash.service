@@ -1,0 +1,44 @@
+# /etc/systemd/system/eze-dash.service
+# Managed by the eze-dash installer — edit /opt/eze-dash/.env for environment vars.
+# Reload after edits: sudo systemctl daemon-reload && sudo systemctl restart eze-dash
+
+[Unit]
+Description=eze-dash — Personal Dashboard
+Documentation=https://github.com/format209/eze-dash
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=eze-dash
+Group=eze-dash
+WorkingDirectory=/opt/eze-dash
+
+# Environment is loaded from the .env file written by the installer.
+# Add or override variables here if needed (they take precedence over .env).
+EnvironmentFile=/opt/eze-dash/.env
+
+# Start the production Next.js server via npm start (defined in package.json).
+ExecStart=/usr/bin/npm --prefix /opt/eze-dash start
+
+# Graceful reload (sends SIGHUP to the process group)
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Restart the service on failure; wait 5 s between attempts.
+Restart=on-failure
+RestartSec=5
+
+# Append-mode logging — also available via journalctl -u eze-dash
+StandardOutput=append:/var/log/eze-dash/out.log
+StandardError=append:/var/log/eze-dash/err.log
+SyslogIdentifier=eze-dash
+
+# Hardening: prevents privilege escalation
+NoNewPrivileges=true
+PrivateTmp=true
+# Restrict writes to only what the app actually needs
+ProtectSystem=strict
+ReadWritePaths=/var/lib/eze-dash /var/log/eze-dash /opt/eze-dash/.next /opt/eze-dash/prisma
+
+[Install]
+WantedBy=multi-user.target
