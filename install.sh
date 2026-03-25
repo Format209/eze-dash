@@ -570,12 +570,6 @@ cmd_update() {
   git -C "$INSTALL_DIR" log --oneline "${current}..${remote}" | sed 's/^/    /'
   echo ""
 
-  # Check if package.json changed (need npm install)
-  local pkg_changed=false
-  if git -C "$INSTALL_DIR" diff --name-only "${current}..${remote}" | grep -qE '^package(-lock)?\.json$'; then
-    pkg_changed=true
-  fi
-
   # Check if prisma schema changed (need db push)
   local schema_changed=false
   if git -C "$INSTALL_DIR" diff --name-only "${current}..${remote}" | grep -q 'prisma/'; then
@@ -588,14 +582,11 @@ cmd_update() {
 
   chown -R "$SERVICE_USER":"$SERVICE_USER" "$INSTALL_DIR"
 
-  # npm install if needed
-  if $pkg_changed; then
-    run_spinner "Updating npm dependencies" \
-      sudo -u "$SERVICE_USER" env HOME="$INSTALL_DIR" \
-        npm ci --prefix "$INSTALL_DIR" --omit=dev
-  else
-    info "No package changes — skipping npm install"
-  fi
+  # Always run npm ci to ensure node_modules matches the pulled code.
+  # Skipping based on package.json diff risks leaving a stale/broken node_modules.
+  run_spinner "Updating npm dependencies" \
+    sudo -u "$SERVICE_USER" env HOME="$INSTALL_DIR" \
+      npm ci --prefix "$INSTALL_DIR"
 
   # Load env
   set -o allexport
