@@ -9,7 +9,7 @@ A self-hosted personal dashboard built with Next.js, Prisma (SQLite), and Tailwi
 > Requires a Debian/Ubuntu, RHEL/Fedora, Arch, or Alpine Linux system with `sudo`.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/format209/eze-dash/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/format209/eze-dash/master/install.sh | sudo bash
 ```
 
 Or clone first and run locally (no internet needed after clone):

@@ -23,7 +23,7 @@ QST="[${COL_YELLOW}?${COL_NC}]"
 
 # ─── Config ─────────────────────────────────────────────────
 REPO_URL="https://github.com/format209/eze-dash.git"   # ← set your repo URL
-BRANCH="main"
+BRANCH="master"
 INSTALL_DIR="/opt/eze-dash"
 DATA_DIR="/var/lib/eze-dash"
 LOG_DIR="/var/log/eze-dash"
