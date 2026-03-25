@@ -244,6 +244,9 @@ create_dirs() {
 
 # ─── Clone or copy app ──────────────────────────────────────
 install_app_files() {
+  # Allow root to run git in the install dir even though it's owned by $SERVICE_USER
+  git config --global --add safe.directory "$INSTALL_DIR" 2>/dev/null || true
+
   if $USE_LOCAL; then
     info "Copying app files from $SOURCE_DIR to $INSTALL_DIR…"
     # Use rsync if available, fall back to cp
@@ -531,6 +534,9 @@ cmd_update() {
   if [[ ! -d "$INSTALL_DIR/.git" ]]; then
     fatal "Installation at $INSTALL_DIR has no .git directory — cannot auto-update."
   fi
+
+  # Allow root to operate on the directory owned by $SERVICE_USER
+  git config --global --add safe.directory "$INSTALL_DIR" 2>/dev/null || true
 
   # Fetch without touching working tree
   info "Fetching latest changes from remote…"
