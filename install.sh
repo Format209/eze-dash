@@ -300,9 +300,11 @@ EOF
 
 # ─── npm install ────────────────────────────────────────────
 install_npm_deps() {
+  # Install all deps including devDependencies — prisma CLI (devDep) is needed
+  # for prisma generate/db push, and TypeScript is needed for next build.
   run_spinner "Installing npm dependencies" \
     sudo -u "$SERVICE_USER" env HOME="$INSTALL_DIR" \
-      npm ci --prefix "$INSTALL_DIR" --omit=dev
+      npm ci --prefix "$INSTALL_DIR"
 }
 
 # ─── Prisma ─────────────────────────────────────────────────
@@ -314,16 +316,15 @@ setup_database() {
   source "$INSTALL_DIR/.env"
   set +o allexport
 
+  local prisma_bin="$INSTALL_DIR/node_modules/.bin/prisma"
+
   run_spinner "Generating Prisma client" \
     sudo -u "$SERVICE_USER" env HOME="$INSTALL_DIR" DATABASE_URL="$DATABASE_URL" \
-      npx --prefix "$INSTALL_DIR" prisma generate --schema="$INSTALL_DIR/prisma/schema.prisma"
+      "$prisma_bin" generate --schema="$INSTALL_DIR/prisma/schema.prisma"
 
   run_spinner "Applying database schema" \
     sudo -u "$SERVICE_USER" env HOME="$INSTALL_DIR" DATABASE_URL="$DATABASE_URL" \
-      npx --prefix "$INSTALL_DIR" prisma db push --schema="$INSTALL_DIR/prisma/schema.prisma" \
-        --accept-data-loss 2>/dev/null || \
-    sudo -u "$SERVICE_USER" env HOME="$INSTALL_DIR" DATABASE_URL="$DATABASE_URL" \
-      npx --prefix "$INSTALL_DIR" prisma migrate deploy --schema="$INSTALL_DIR/prisma/schema.prisma"
+      "$prisma_bin" db push --schema="$INSTALL_DIR/prisma/schema.prisma" --accept-data-loss
 }
 
 # ─── Build ──────────────────────────────────────────────────
@@ -596,7 +597,7 @@ cmd_update() {
   if $schema_changed; then
     run_spinner "Updating database schema" \
       sudo -u "$SERVICE_USER" env HOME="$INSTALL_DIR" DATABASE_URL="$DATABASE_URL" \
-        npx --prefix "$INSTALL_DIR" prisma db push \
+        "$INSTALL_DIR/node_modules/.bin/prisma" db push \
           --schema="$INSTALL_DIR/prisma/schema.prisma" --accept-data-loss
   fi
 
