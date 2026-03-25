@@ -52,9 +52,11 @@ fatal() { error "$*"; exit 1; }
 
 banner() {
   echo -e ""
-  echo -e "  ${COL_CYAN}┌──────────────────────────────────────┐${COL_NC}"
-  echo -e "  ${COL_CYAN}│${COL_NC}  ${COL_WHITE}eze-dash  —  Dashboard Installer${COL_NC}     ${COL_CYAN}│${COL_NC}"
-  echo -e "  ${COL_CYAN}└──────────────────────────────────────┘${COL_NC}"
+  echo -e "  ${COL_CYAN}╭─────────────────────────────────────────╮${COL_NC}"
+  echo -e "  ${COL_CYAN}│${COL_NC}                                         ${COL_CYAN}│${COL_NC}"
+  echo -e "  ${COL_CYAN}│${COL_NC}   ${COL_WHITE}◈  eze-dash${COL_NC}  ${COL_CYAN}·${COL_NC}  ${COL_WHITE}Dashboard Installer${COL_NC}   ${COL_CYAN}│${COL_NC}"
+  echo -e "  ${COL_CYAN}│${COL_NC}                                         ${COL_CYAN}│${COL_NC}"
+  echo -e "  ${COL_CYAN}╰─────────────────────────────────────────╯${COL_NC}"
   echo -e ""
 }
 
@@ -271,7 +273,7 @@ install_app_files() {
       fatal "REPO_URL is not configured. Edit install.sh and set REPO_URL at the top, or use --repo=https://github.com/user/eze-dash.git"
     fi
     if [[ -d "$INSTALL_DIR/.git" ]]; then
-      info "App directory exists — pulling latest from $BRANCH…"
+      info "App directory exists — pulling latest"
       git -C "$INSTALL_DIR" fetch origin
       git -C "$INSTALL_DIR" reset --hard "origin/$BRANCH"
     else
@@ -526,9 +528,11 @@ cmd_version() {
 cmd_update() {
   need_root "$@"
   echo ""
-  echo -e "  ${COL_CYAN}┌────────────────────────────────┐${COL_NC}"
-  echo -e "  ${COL_CYAN}│${COL_NC}  eze-dash Update Check          ${COL_CYAN}│${COL_NC}"
-  echo -e "  ${COL_CYAN}└────────────────────────────────┘${COL_NC}"
+  echo -e "  ${COL_CYAN}╭──────────────────────────────────────╮${COL_NC}"
+  echo -e "  ${COL_CYAN}│${COL_NC}                                      ${COL_CYAN}│${COL_NC}"
+  echo -e "  ${COL_CYAN}│${COL_NC}   ↻  eze-dash  ·  Update Check       ${COL_CYAN}│${COL_NC}"
+  echo -e "  ${COL_CYAN}│${COL_NC}                                      ${COL_CYAN}│${COL_NC}"
+  echo -e "  ${COL_CYAN}╰──────────────────────────────────────╯${COL_NC}"
   echo ""
 
   if [[ ! -d "$INSTALL_DIR/.git" ]]; then
@@ -749,9 +753,11 @@ print_summary() {
   ver=$(git -C "$INSTALL_DIR" rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
   echo -e ""
-  echo -e "  ${COL_GREEN}╔══════════════════════════════════════════╗${COL_NC}"
-  echo -e "  ${COL_GREEN}║${COL_NC}  eze-dash installed successfully!        ${COL_GREEN}║${COL_NC}"
-  echo -e "  ${COL_GREEN}╚══════════════════════════════════════════╝${COL_NC}"
+  echo -e "  ${COL_GREEN}╔═════════════════════════════════════════════╗${COL_NC}"
+  echo -e "  ${COL_GREEN}║${COL_NC}                                             ${COL_GREEN}║${COL_NC}"
+  echo -e "  ${COL_GREEN}║${COL_NC}   ${COL_WHITE}◈  eze-dash installed successfully!${COL_NC}       ${COL_GREEN}║${COL_NC}"
+  echo -e "  ${COL_GREEN}║${COL_NC}                                             ${COL_GREEN}║${COL_NC}"
+  echo -e "  ${COL_GREEN}╚═════════════════════════════════════════════╝${COL_NC}"
   echo -e ""
   echo -e "    URL       : ${COL_CYAN}http://$(hostname -I | awk '{print $1}'):${port}${COL_NC}"
   echo -e "    Version   : ${ver}"
